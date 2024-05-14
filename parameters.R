@@ -80,7 +80,7 @@ plot_distribution(1000,
 # not actually output the parameters themselves. If you would wish to get the 
 # parameters themselves, you can use `draw_parameters` instead. This has the 
 # same arguments as `plot_distribution`.
-draw_parameters(1, 
+draw_parameters(1000, 
                 mean = mu, 
                 Sigma = sigma, 
                 individual_differences = TRUE)
