@@ -319,9 +319,6 @@ create_agents <- function(n,
                                   archetype = params$name,
                                   individual_differences = individual_differences)
 
-        # Adjust the preferred speed to the time_step taken
-        params$preferred_speed <- params$preferred_speed * time_step
-
         # Adjust the duration of the current goal
         agent_goal <- goals[[idx[i]]]
         agent_goal@counter <- goal_duration(1)
