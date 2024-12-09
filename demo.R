@@ -19,8 +19,12 @@ trace <- simulate(
     model,
     N = c(6, 2),
     iterations = 1000,
-    cycle_duration = 180,    ,
+    cycle_duration = 1800,    ,
     group_size = matrix(c(1, 1), nrow = 1)
+)
+saveRDS(
+    trace, 
+    file.path("results", "simulation.Rds")
 )
 
 # Plot and save output
