@@ -80,7 +80,7 @@ simulate <- function(model,
 
     # Create an initial state from which to start. This state should include the
     # bookkeeping variables that I use and adjust in the `assign_tablet` function
-    history <- rep(sit_duration(1), sum(N))
+    history <- rep(iterations, sum(N))
     names(history) <- sapply(inx, predped::id)
 
     previous_goal <- sapply(inx, \(x) predped::id(predped::current_goal(x)))

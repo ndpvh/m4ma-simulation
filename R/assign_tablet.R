@@ -49,13 +49,6 @@ assign_tablet <- function(state) {
         return(state)
     }
 
-    # Check whether the cycle has been completed. If so, reset the history of
-    # the participants and start over again.
-    if(state@iteration %% cycle_duration == 0) {
-        history <- rep(sit_counter(N[2]), each = length(agents))
-        names(history) <- sapply(agents, predped::id)
-    }
-
     # Get the id's of the current goals of the agents and of the goal stack. The
     # mapping between these two will tell us which goals are free.
     id_goals <- sapply(
@@ -114,11 +107,16 @@ assign_tablet <- function(state) {
             # we will assign them a "sit" tablet
             if(history[predped::id(agents[[i]])] == max(history)) {
                 # Assign the "sit" tablet
-                idx <- which(grepl("sit", personal_tablets, fixed = TRUE))[1]
-                idy <- personal_tablets[idx] == id_stack
+                idx <- which(grepl("sit", personal_tablets, fixed = TRUE))
+                if(length(idx) == 0) {
+                    predped::status(agents[[i]]) <- "wait"
+                    next
+                }
+
+                idy <- personal_tablets[idx[1]] == id_stack
 
                 predped::current_goal(agents[[i]]) <- goal_stack[idy][[1]]
-                predped::current_goal(agents[[i]])@counter <- max(history)
+                predped::current_goal(agents[[i]])@counter <- sit_counter(N[2])
 
                 # Delete this tablet from the free tablets
                 free_tablets <- free_tablets[!(personal_tablets[idx] == free_tablets)]
@@ -132,12 +130,18 @@ assign_tablet <- function(state) {
         }
 
         # If no "sit" tablet is assigned, a "walk" tablet will be assigned to
-        # the agent
+        # the agent. Do an additional check of whether one is free.
         idx <- which(grepl("walk", personal_tablets, fixed = TRUE))
+        if(length(idx) == 0) {
+            predped::status(agents[[i]]) <- "wait"
+            next
+        }
+
         idx <- ifelse(length(idx) > 1, sample(idx, 1), idx)
         idy <- personal_tablets[idx] == id_stack
 
-        predped::current_goal(agents[[i]]) <- goal_stack[idy][[1]]
+        tryCatch(predped::current_goal(agents[[i]]) <- goal_stack[idy][[1]], 
+                 error = function(e) browser())
         predped::current_goal(agents[[i]])@counter <- walk_counter(1)
 
         # Delete this tablet from the free tablets
