@@ -1,3 +1,10 @@
+################################################################################
+# demo.R                                                                       #
+#                                                                              #
+# Script that you can use to play around with a simulation for the experiment. #
+# Builds and depends on the functions created in the folder R.                 #
+################################################################################
+
 devtools::load_all()
 
 # Load the experimental room and create a model
