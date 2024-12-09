@@ -23,6 +23,11 @@ initial_condition <- function(model,
         # Get the goals of interest
         idx <- which(grepl(kind, sapply(goal_stack, predped::id), fixed = TRUE))
 
+        # Keep track of how many agents were added in this round. This will allow 
+        # us to correct how long the people should be waiting if a sitting goal 
+        # is assigned.
+        n <- 1
+
         # Add as many agents as the criterion demands. For each, choose a random 
         # goal
         while(length(agent_list) < number) {
@@ -41,7 +46,8 @@ initial_condition <- function(model,
             idx <- idx[idx != idy]
             
             # Adjust the counter of the goal
-            predped::counter(goal) <- duration(agent_number)
+            predped::counter(goal) <- duration(n)
+            n <- n + 1
     
             # Add the agent and return
             agent_list <- append(

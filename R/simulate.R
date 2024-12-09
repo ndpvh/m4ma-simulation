@@ -63,7 +63,7 @@ simulate <- function(model,
 
     # Define the sit_duration function. Is dependent on the number of people in 
     # the room and the time one cycle takes.
-    sit_duration <- \(x) (N[2] * cycle_duration / sum(N)) * x / N[2]
+    sit_duration <- \(x) x * cycle_duration / sum(N)
 
     # Create an initial condition to be used as a starting position in the 
     # experiment.

@@ -118,7 +118,7 @@ assign_tablet <- function(state) {
                 idy <- personal_tablets[idx] == id_stack
 
                 predped::current_goal(agents[[i]]) <- goal_stack[idy][[1]]
-                predped::current_goal(agents[[i]])@counter <- sit_counter(1)
+                predped::current_goal(agents[[i]])@counter <- max(history)
 
                 # Delete this tablet from the free tablets
                 free_tablets <- free_tablets[!(personal_tablets[idx] == free_tablets)]
