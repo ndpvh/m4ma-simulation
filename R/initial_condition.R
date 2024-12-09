@@ -125,7 +125,7 @@ add_agent <- function(model,
             nrow = 2,
             ncol = 2
         )
-        center <- predped::position(goal) + R %*% c(params[["radius"]] + 1e-1, 0)
+        center <- predped::position(goal) + R %*% c(params[["radius"]] + 2e-1, 0)
     } else {
         # Create alternative positions at which the agent can be located
         alpha <- seq(0, 2 * pi, pi/8)
@@ -136,7 +136,7 @@ add_agent <- function(model,
             byrow = TRUE
         )
 
-        center <- rep_goal + (params[["radius"]] + 1e-1) * cbind(cos(alpha), sin(alpha))
+        center <- rep_goal + (params[["radius"]] + 2e-1) * cbind(cos(alpha), sin(alpha))
 
         # For each potential position, check whether the agent would intersect 
         # the object in question. Use the nodes_on_circumference function for 
@@ -166,10 +166,8 @@ add_agent <- function(model,
 
         # Also identify the orientation the agent has to look in to look 
         # straight at the goal
-        orientation <- atan2(
-            predped::position(goal),
-            center
-        )
+        xy <- predped::position(goal)[] - center
+        orientation <- atan2(xy[2], xy[1])
     }
 
     # With this defined, we can create the agent itself
@@ -183,10 +181,10 @@ add_agent <- function(model,
             goals = list(), 
             parameters = params,
             group = group_number,
-            color = color
+            color = color,
+            status = "completing goal"
         )
     )
-
 }
 
 

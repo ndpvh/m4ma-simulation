@@ -75,21 +75,22 @@ simulate <- function(model,
         sit_duration,
         group_size = group_size,
         individual_differences = individual_differences,
-        standing_start = standing_start,
-        ...
-    ) 
+        standing_start = standing_start
+    )
 
-    browser()
-    
     # Create an initial state from which to start. This state should include the
     # bookkeeping variables that I use and adjust in the `assign_tablet` function
     history <- rep(sit_duration(1), sum(N))
     names(history) <- sapply(inx, predped::id)
 
-    inx <- state(
+    previous_goal <- sapply(inx, \(x) predped::id(predped::current_goal(x)))
+    names(previous_goal) <- sapply(inx, predped::id)
+
+    inx <- predped::state(
         iteration = 0,
         setting = model@setting, 
         agents = inx, 
+        potential_agents = list(),
         variables = list(
             "history" = history,
             "goal_stack" = goals, 
@@ -97,19 +98,21 @@ simulate <- function(model,
             "sit_counter" = sit_duration, 
             "walk_counter" = walk_duration,
             "cycle_duration" = cycle_duration,
-            "N" = N
+            "N" = N,
+            "previous_goal" = previous_goal
         )
     )
 
     # Now, we can run the simulation and return the result
     return(
-        simulate(
+        predped::simulate(
             model,
             iterations = iterations,
             max_agents = 0,             # Enforced to make sure noone enters the room
             fx = gx,
-            standing_start,
+            standing_start = standing_start,
             time_step = time_step,
+            initial_condition = inx,
             ...
         )
     )

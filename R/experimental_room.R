@@ -162,32 +162,32 @@ experimental_room <- function() {
         limited_access = list(
             # Between the tablets
             predped::segment(
-                from = centers[2,] - c(0.025, 0),
-                to = centers[1,] - c(0.025, 0)                
+                from = centers[2,] + c(0.025, 0),
+                to = centers[1,] + c(0.025, 0)                
             ), 
             predped::segment(
                 from = centers[3,],
-                to = centers[2,] - c(0.025, 0)                
+                to = centers[2,] + c(0.025, 0)                
             ),
             predped::segment(                
-                from = centers[4,] + c(0, 0.025),
+                from = centers[4,] - c(0, 0.025),
                 to = centers[3,]
             ),
             predped::segment(
-                from = centers[5,] + c(0, 0.025),
-                to = centers[4,] + c(0, 0.025)                
+                from = centers[5,] - c(0, 0.025),
+                to = centers[4,] - c(0, 0.025)                
             ),
             predped::segment(                
                 from = centers[6,],
-                to = centers[5,] + c(0, 0.025)
+                to = centers[5,] - c(0, 0.025)
             ),
             predped::segment(
-                from = centers[7,] + c(0.025, 0),
+                from = centers[7,] - c(0.025, 0),
                 to = centers[6,]                
             ),
             predped::segment(
-                from = centers[8,] + c(0.025, 0),
-                to = centers[7,] + c(0.025, 0)                
+                from = centers[8,] - c(0.025, 0),
+                to = centers[7,] - c(0.025, 0)                
             ),
             # From waiting room to tablets
             predped::segment(
