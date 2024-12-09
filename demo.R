@@ -19,7 +19,7 @@ trace <- simulate(
     model,
     N = c(6, 2),
     iterations = 1000,
-    cycle_duration = 1800,    ,
+    cycle_duration = 180,    ,
     group_size = matrix(c(1, 1), nrow = 1)
 )
 
@@ -33,4 +33,11 @@ gifski::save_gif(
     lapply(plt, \(x) print(x)),
     file.path("results", "simulation.gif"),
     delay = 1/10
+)
+
+# Transform the trace to a dataframe and save as a csv-file
+data <- predped::time_series(trace)
+data.table::fwrite(
+    data, 
+    file.path("results", "simulation.csv")
 )
