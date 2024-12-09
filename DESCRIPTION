@@ -1,0 +1,34 @@
+Package: predped_experiment
+Type: Package
+Title: Running an experiment in predped
+Version: 1.0
+Date: 2024-12-06
+Author: person("Niels", 
+               "Vanhasbroeck", 
+               email = "niels.vanhasbroeck@gmail.com",
+               comment = c(ORCID = 0000-0002-7423-0090))
+Maintainer: Niels Vanhasbroeck <niels.vanhasbroeck@gmail.com>
+Description: /
+License: GPL v3
+Encoding: UTF-8
+Imports: 
+    matrixStats,
+    methods,
+    predped,
+    ggplot2,
+    dplyr,
+    magrittr,
+    tidyr
+RoxygenNote: 7.3.2
+Collate:
+    'assign_tablet.R'
+    'experimental_room.R'
+    'goals.R'
+    'initial_condition.R'
+    'simulate.R'
+Suggests: 
+    fs,
+    testthat (>= 3.0.0)
+Remotes:
+    ndpvh/predped
+Config/testthat/edition: 3
