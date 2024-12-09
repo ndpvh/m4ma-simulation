@@ -1,24 +1,84 @@
-# Loads utility functions to be used for the simulation.
-source(file.path("utility", "simulate.R"))
+################################################################################
+# parameters.R                                                                 #
+#                                                                              #
+# Script that you can use to play around with some parameters and their        #
+# distributions.                                                               #
+################################################################################
 
-# Vectors that define the parameters by name. Used in the functions defined here.
-# Not exported because not needed anywhere else.
-nest_parameters <- c("central", 
-                     "non_central", 
-                     "acceleration", 
-                     "constant_speed", 
-                     "deceleration")
+devtools::load_all()
 
-utility_parameters <- colnames(params_archetypes)
-utility_parameters <- utility_parameters[!(utility_parameters %in% c("name", "color"))]
+#-------------------------------------------------------------------------------
+# Reading and writing
 
-# Define the means of the parameters. In this example, I just make use of a 
-# specific archetype, but can be anything you like
-mu <- params_archetypes[params_archetypes$name == "BaselineEuropean", ]
+# Get the parameters from the defaults for predped.
+params <- predped::params_from_csv
+
+# Predped expects you to provide a named list containing "params_archetypes"
+# (dataframe of mean values for the parameters), "params_sigma" (a matrix 
+# containing standard deviations on the diagonal and correlations on the 
+# off-diagonal for each of the parameters), and "params_bounds" (a matrix 
+# containing the lower and upper bounds for each parameter). 
+#
+# How to play around with the distributions is for later. For now, let's focus 
+# on setting their values and saving them for later use. Let's start with the 
+# "params_archetypes" and create a new archetype called the FastWalker with a 
+# mean preferred_speed of 1.8 m/sec. We do this by:
+#   - Selecting a baseline parameter set to use
+#   - Changing its name to FastWalker
+#   - Changing its preferred speed to 1.8
+my_archetype <- params[["params_archetypes"]]
+my_archetype <- my_archetype[my_archetype$name == "BaselineEuropean", ]
+
+my_archetype$name <- "FastWalker"
+my_archetype$preferred_speed <- 1.8
+
+# We will now add this archetype to the original dataframe and see whether 
+# we did everything right.
+params[["params_archetypes"]] <- rbind(
+    params[["params_archetypes"]], 
+    my_archetype
+)
+View(params[["params_archetypes"]])
+
+# We changed the mean parameters of this archetype, but did not consider creating
+# its standard deviation-correlation matrix yet. For this, we can also use a 
+# baseline matrix from the other archetypes already. 
+#
+# Note that the row- and colunn names denote the utility parameters.
+sigma <- params[["params_sigma"]][["BaselineEuropean"]]
+print(rownames(sigma))
+print(colnames(sigma))
+View(sigma)
+
+# Let's change the standard deviation for the preferred speed to a smaller value
+# and save it in the parameters list
+sigma["preferred_speed", "preferred_speed"] <- 0.05
+View(sigma)
+
+params[["params_sigma"]][["FastWalker"]] <- sigma
+
+# Now to save this parameter-list, we can just use the saveRDS function. To read
+# it in and use it again, you can load it in the simulation through defining 
+# the file.path to the file.
+saveRDS(
+    params, 
+    file.path("results", "parameters.Rds")
+)
+
+
+
+#-------------------------------------------------------------------------------
+# Parameter distributions
+
+# Extract the mean parameters under the code "params_archetypes". Let us 
+# furthermore select a single archetypes from this dataframe for future use.
+mu <- params[["params_archetypes"]]
 View(mu)
 
+baseline <- mu[mu$name == "BaselineEuropean",]
+
 # Define the covariance matrix you want to use. Here, I just use the default 
-# diagonal matrix I created for predped, but again can be more complex. 
+# diagonal matrix I created for predped, but can be more complex. 
 #
 # If you wish to make it more complex, then it is important to consider structure.
 # On the diagonal, standard deviations for the parameters are contained, while 
@@ -35,8 +95,8 @@ View(mu)
 # of the default `TRUE`).
 sigma <- diag(c(0.15, 0.1, 0.05, 0.1, 0.01, 0.1, 0.1, 0, 0, 
                 0.15, 0, 0.15, 0, 0.15, 0, 0, 0.15, 0, 0.15, 0, 
-                0, 0.15, 0, 0, 0, 0, 0, 0))
-rownames(sigma) <- colnames(sigma) <- utility_parameters
+                0, 0.15, 0, 0, 0.15, 0.15, 0, 0, 0, 0, 0))
+rownames(sigma) <- colnames(sigma) <- predped:::utility_parameters(baseline)
 View(sigma)
 
 # Plot the distribution of 1000 draws of the parameter from the distribution 
@@ -49,38 +109,21 @@ View(sigma)
 #   - Once parameters are drawn, we transform back to probit with `pnorm` and 
 #     then to the original range of the parameters
 #
-# As a small introduction to the parameters that are at play here, a quick copy-
-# paste from the documentation
-# 
-# @param n Integer denoting the number of parameters to draw. Defaults to `1`.
-# @param mean A named list containing the mean for each of the parameters for 
-# a given agent.
-# @param Sigma Either a covariance matrix that defines the individual differences
-# on each of the parameters (when `transform_covariance == FALSE`), or a matrix
-# containing standard deviations for each of the parameters on its diagonal and
-# correlations between the parameters on its off-diagonal (when 
-# `transform_covariance == TRUE`). Default covariance matrices exist for each
-# of the archetypes in `params_archetypes` and thus changes with the value of 
-# `archetype`.
-# @param archetype String denoting the archetype to be used for the covariance
-# matrix. Ignored if `Sigma` is provided. Defaults to `BaselineEuropean`.
-# @param individual_differences Logical denoting whether to use the standard 
-# deviations in the parameter list to create some variation in the parameters.
-# Defaults to `TRUE`.
-# @param transform_covariance Logical denoting whether to transform `Sigma` to 
-# a proper covariance matrix or not. Defaults to `TRUE`. 
-#
-# I think that for you, the arguments `n`, `mean`, and `Sigma` are most interesting.
-plot_distribution(1000, 
-                  mean = mu,
-                  Sigma = sigma,
-                  individual_differences = TRUE)
+# For more information on this function, consult the documentation of predped.
+predped::plot_distribution(
+    1000, 
+    mean = baseline,
+    Sigma = sigma,
+    individual_differences = TRUE
+)
 
 # One downside of `plot_distribution` is that it only creates plots, but does 
 # not actually output the parameters themselves. If you would wish to get the 
 # parameters themselves, you can use `draw_parameters` instead. This has the 
 # same arguments as `plot_distribution`.
-draw_parameters(1000, 
-                mean = mu, 
-                Sigma = sigma, 
-                individual_differences = TRUE)
+predped::draw_parameters(
+    1000, 
+    mean = baseline, 
+    Sigma = sigma, 
+    individual_differences = TRUE
+)
