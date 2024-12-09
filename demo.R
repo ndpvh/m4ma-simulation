@@ -5,31 +5,32 @@ setting <- experimental_room()
 predped::plot(setting)
 
 model <- predped::predped(
-    setting = setting, 
+    setting = setting,
     archetypes = c(
         "BaselineEuropean",
         "BigRushingDutch"
-    ), 
+    ),
     weights = c(0.5, 0.5)
 )
 
 # Run the simulation
 set.seed(5) # Sword - Sufferer
 trace <- simulate(
-    model, 
+    model,
     N = c(6, 2),
-    iterations = 100,
-    cycle_duration = 1800,    , 
+    iterations = 1000,
+    cycle_duration = 1800,    ,
     group_size = matrix(c(1, 1), nrow = 1)
 )
 
 # Plot and save output
 plt <- predped::plot(
-    trace, 
-    dark_mode = TRUE
+    trace,
+    dark_mode = TRUE,
+    optimize = TRUE
 )
 gifski::save_gif(
-    lapply(plt, \(x) print(x)),                                     
+    lapply(plt, \(x) print(x)),
     file.path("results", "simulation.gif"),
     delay = 1/10
 )
