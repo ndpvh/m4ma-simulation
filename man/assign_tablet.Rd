@@ -7,15 +7,15 @@
 assign_tablet(state)
 }
 \arguments{
-\item{state}{Object of the \code{\link[predped]{state-class}} containing the 
+\item{state}{Object of the \code{\link[predped]{state-class}} containing the
 current state.}
 }
 \description{
 Draws a quasi-random tablet from the list of free tablets for each agent that
-currently does not have a goal. When a "sit" tablet is free, the function 
-will check whether its the agents turn to sit down. If not, then we assign a 
-"walk" tablet. If it is the agents' turn, then we assign the agent a "sit" 
-tablet instead. If no "sit" tablets are free, then the agent is automatically 
+currently does not have a goal. When a "sit" tablet is free, the function
+will check whether its the agents turn to sit down. If not, then we assign a
+"walk" tablet. If it is the agents' turn, then we assign the agent a "sit"
+tablet instead. If no "sit" tablets are free, then the agent is automatically
 assigned a "walk" tablet.
 }
 \details{
