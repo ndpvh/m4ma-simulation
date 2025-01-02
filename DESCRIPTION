@@ -23,6 +23,7 @@ RoxygenNote: 7.3.2
 Collate:
     'assign_tablet.R'
     'experimental_room.R'
+    'dans_room.R'
     'goals.R'
     'initial_condition.R'
     'simulate.R'

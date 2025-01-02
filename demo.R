@@ -8,7 +8,7 @@
 devtools::load_all()
 
 # Load the experimental room and create a model
-setting <- experimental_room()
+setting <- experimental_room()  # Also possible, dans_room()
 predped::plot(setting)
 
 model <- predped::predped(
