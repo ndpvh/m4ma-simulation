@@ -3,6 +3,7 @@
 export(add_agent)
 export(add_group)
 export(assign_tablet)
+export(dans_room)
 export(experimental_room)
 export(goal_stack)
 export(initial_condition)
