@@ -97,6 +97,33 @@ add_agent <- function(model,
     obj <- predped::objects(model@setting)
     idx <- sapply(obj, \(x) grepl(predped::id(x), predped::id(goal), fixed = TRUE))
 
+    # Check whether more than one goal corresponds to this requirement. If so, we
+    # need to disambiguate a bit more.
+    if(sum(idx) > 1) {
+        # Update the objects to only retain those that are still in the running.
+        obj <- obj[idx]
+
+        # Retain the last part of the goal id for disambiguation. 
+        goal_number <- stringr::str_split(
+            predped::id(goal),
+            " "
+        )[[1]]
+        goal_number <- goal_number[length(goal_number)]
+
+        # Do the same for the objects
+        obj_number <- sapply(
+            obj,
+            function(x) {
+                tmp <- stringr::str_split(predped::id(x), " ")[[1]]
+                return(tmp[length(tmp)])
+            }
+        )
+
+        # With this done, check which of the options corresponds to the goal 
+        # provided to the agent.
+        idx <- obj_number == goal_number
+    }
+
     obj <- obj[idx][[1]]
 
     # Draw a random agent from the parameter distributions
