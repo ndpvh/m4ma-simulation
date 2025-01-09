@@ -55,6 +55,7 @@ initial_condition <- function(model,
                 add_group(
                     model, 
                     goal, 
+                    other_agents = agent_list,
                     group_number = length(agent_list), 
                     agent_number = agent_number,
                     ...
@@ -242,6 +243,7 @@ add_agent <- function(model,
 #' @export
 add_group <- function(model,
                       goal,
+                      other_agents = list(),
                       agent_number = 1,
                       group_number = 1,
                       standing_start = 0.1,
@@ -296,6 +298,13 @@ add_group <- function(model,
 
     # Check whether any of these positions implies that the agent will intersect
     # with something or someone else. If so, delete these ids
+    #
+    # Add other agents that are already in the room to the objects of the room.
+    # Will prevent new agents to intersect with those that are already there.
+    obj <- append(
+        obj,
+        append(other_agents, agents[[1]])
+    )
     obj_nodes <- do.call(
         "rbind", 
         lapply(obj, predped::nodes_on_circumference)
